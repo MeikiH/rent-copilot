@@ -46,7 +46,7 @@ defineProps({
   }
 })
 
-const { clear, session } = useUserSession()
+const { logout, session } = useAuth()
 const { getPlatformConfig } = usePlatforms()
 const router = useRouter()
 
@@ -65,8 +65,7 @@ const currentPlatform = computed(() => {
   }
 })
 
-const handleLogout = () => {
-  clear()
-  router.push('/auth/login')
+const handleLogout = async () => {
+  await logout()
 }
 </script>

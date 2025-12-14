@@ -71,7 +71,7 @@
 <script setup lang="ts">
 import { menuEntries } from '~/layouts/menu'
 
-const { user, clear } = useUserSession()
+const { user, logout } = useAuth()
 const router = useRouter()
 const route = useRoute()
 
@@ -80,8 +80,7 @@ const pageTitle = computed(() => {
   return route.meta.title || null
 })
 
-const handleLogout = () => {
-  clear()
-  router.push('/auth/login')
+const handleLogout = async () => {
+  await logout()
 }
 </script>
