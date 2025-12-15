@@ -30,7 +30,7 @@
       />
 
       <DataViewerX14List
-        v-else
+        v-else-if="currentPlatform === 'x14'"
         :persons="data.data.persons" 
         :mandates="data.data.mandates" 
         :properties="data.data.properties" 
@@ -65,16 +65,21 @@ const loading = ref(false)
 const error = ref<string | null>(null)
 const data = ref<any>(null)
 
-// Get current platform from session
+// Get current connection from session
+const currentConnection = computed(() => {
+  return session.value?.activeConnection || null
+})
+
 const currentPlatform = computed(() => {
-  return session.value?.currentPlatform || 'wipimo'
+  return currentConnection.value?.platform?.slug || null
 })
 
 const loadData = async () => {
     console.log('session value:', session.value)
-
-    if (!currentPlatform.value) {
-        error.value = 'Aucune plateforme connectée'
+    console.log('currentConnection value:', currentConnection.value)
+    
+    if (!currentConnection.value) {
+        error.value = 'Aucune connexion active'
         return
     }
 
@@ -82,9 +87,9 @@ const loadData = async () => {
     error.value = null
 
     try {
-        console.log('Loading data for platform:', currentPlatform.value)
+        console.log('Loading data for connection:', currentConnection.value)
         
-        const response = await fetchAllData(currentPlatform.value)
+        const response = await fetchAllData(currentConnection.value)
         data.value = response
 
         console.log('Data loaded successfully:', response)

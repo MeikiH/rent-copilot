@@ -146,7 +146,32 @@ export default defineEventHandler(async (event) => {
         });
       }
 
-      // Create user session like v0.5
+      // Get existing session and merge connections
+      const existingSession = await getUserSession(event)
+      const existingConnections = existingSession?.connections || []
+      
+      // Create computed ID: platformSlug-environment
+      const connectionId = `wipimo-${environment}`
+      
+      // Create connection object with platform metadata
+      const connectionObject = {
+        id: connectionId,
+        platform: {
+          slug: 'wipimo',
+          name: 'Wipimo',
+          description: 'Plateforme de gestion locative Wipimo'
+        },
+        environment,
+        login,
+        cliDomain: userInfo.cliDomain,
+        token,
+        expiresAt: Date.now() + (24 * 60 * 60 * 1000)
+      }
+      
+      // Remove existing connection with same ID if it exists
+      const updatedConnections = existingConnections.filter(conn => conn.id !== connectionId)
+      
+      // Create or update user session with merged connections
       await setUserSession(event, {
         user: {
           // Raw Wipimo fields (exact casing)
@@ -163,15 +188,8 @@ export default defineEventHandler(async (event) => {
           userName: userInfo.Pseudo,
           companyName: userInfo.Societe ?? userInfo.cliDomain
         },
-        platforms: {
-          wipimo: {
-            environment,
-            cliDomain: userInfo.cliDomain,
-            token,
-            expiresAt: Date.now() + (24 * 60 * 60 * 1000)
-          }
-        },
-        currentPlatform: 'wipimo'
+        connections: [...updatedConnections, connectionObject],
+        activeConnection: connectionObject
       });
 
       return {

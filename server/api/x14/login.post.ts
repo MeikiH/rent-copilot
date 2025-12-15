@@ -82,7 +82,33 @@ export default defineEventHandler(async (event) => {
       console.log('X14 authentication successful for user:', AuthStorage.nom);
       console.log('X14 TOKEN:', x14Response.authenticationToken);
       
-      // Create user session like v0.5 but for X14
+      // Get existing session and merge connections
+      const existingSession = await getUserSession(event)
+      const existingConnections = existingSession?.connections || []
+      
+      // Create computed ID: platformSlug-environment
+      const connectionId = `x14-${environment}`
+      
+      // Create connection object with platform metadata
+      const connectionObject = {
+        id: connectionId,
+        platform: {
+          slug: 'x14',
+          name: 'X14',
+          description: 'Plateforme de gestion immobilière X14'
+        },
+        environment,
+        login,
+        token: x14Response.authenticationToken,
+        agenceId: Agence.id,
+        agenceName: Agence.nom,
+        expiresAt: AuthStorage.expiration * 1000 // Convert to milliseconds
+      }
+      
+      // Remove existing connection with same ID if it exists
+      const updatedConnections = existingConnections.filter(conn => conn.id !== connectionId)
+      
+      // Create or update user session with merged connections for X14
       await setUserSession(event, {
         user: {
           // X14 fields
@@ -95,16 +121,8 @@ export default defineEventHandler(async (event) => {
           userName: AuthStorage.nom,
           companyName: Agence.nom
         },
-        platforms: {
-          x14: {
-            environment,
-            token: x14Response.authenticationToken,
-            agenceId: Agence.id,
-            agenceName: Agence.nom,
-            expiresAt: AuthStorage.expiration * 1000 // Convert to milliseconds
-          }
-        },
-        currentPlatform: 'x14'
+        connections: [...updatedConnections, connectionObject],
+        activeConnection: connectionObject
       });
 
       return {

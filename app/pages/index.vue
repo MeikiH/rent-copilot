@@ -33,21 +33,49 @@
     <!-- Quick Actions -->
     <div class="card bg-base-100 shadow-xl">
       <div class="card-body">
-        <h2 class="card-title">Actions rapides</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-          <Button class="btn-outline gap-2">
-            <Icon code="heroicons:document-arrow-up" />
-            Import données
-          </Button>
-          <Button class="btn-outline gap-2">
-            <Icon code="heroicons:chart-pie" />
-            Visualiser
-          </Button>
-          <Button class="btn-outline gap-2">
-            <Icon code="heroicons:arrow-path" />
-            Transfert
+        <h2 class="card-title">Connexions</h2>
+        
+        <div v-if="!session?.connections?.length" class="text-center py-8">
+          <Icon code="heroicons:plus-circle" class="w-16 h-16 mx-auto text-gray-400 mb-4" />
+          <p class="text-lg mb-4">Aucune connexion active</p>
+          <Button @click="$router.push('/auth/login')" class="btn-primary">
+            Se connecter
           </Button>
         </div>
+
+        <div v-else class="space-y-4">
+          <div 
+            v-for="connection in session.connections" 
+            :key="connection.id" 
+            class="card bg-base-200 hover:bg-base-300 cursor-pointer transition-colors"
+            :class="{ 'ring-2 ring-primary': isActiveConnection(connection) }"
+            @click="switchConnection(connection)"
+          >
+            <div class="card-body p-4">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                  <LogoEnvironment 
+                    :platform="connection.platform.slug" 
+                    :environment="connection.environment" 
+                    class="w-12 h-12"
+                  />
+                  <div>
+                    <h3 class="font-bold">{{ connection.platform.name }}</h3>
+                    <p class="text-sm opacity-70">{{ connection.environment }}</p>
+                    <p class="text-xs opacity-60">{{ connection.login }}</p>
+                  </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <div v-if="isActiveConnection(connection)" class="badge badge-primary">Actif</div>
+                  <Button size="sm" class="btn-ghost btn-sm" @click.stop="viewData(connection)">
+                    <Icon code="heroicons:eye" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -62,10 +90,29 @@ definePageMeta({
 const { user, session } = useUserSession()
 
 const connectedPlatforms = computed(() => {
-  return Object.keys(session.value?.platforms || {}).length
+  return session.value?.connections?.length || 0
 })
 
 const lastActivity = computed(() => {
   return new Date().toLocaleTimeString('fr-FR')
 })
+
+const isActiveConnection = (connection: any) => {
+  return session.value?.activeConnection?.id === connection.id
+}
+
+const switchConnection = async (connection: any) => {
+  if (!isActiveConnection(connection)) {
+    // Here you would implement switching active connection
+    // This might require an API call to update the session
+    console.log('Switching to connection:', connection.id)
+    // For now, just navigate to data viewer
+    await navigateTo('/data-viewer')
+  }
+}
+
+const viewData = async (connection: any) => {
+  // Set as active connection and navigate to data viewer
+  await navigateTo('/data-viewer')
+}
 </script>

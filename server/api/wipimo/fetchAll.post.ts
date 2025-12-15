@@ -1,6 +1,6 @@
 export default defineEventHandler(async (event) => {
   try {
-    // Get user session
+    // Get user session for authentication
     const session = await getUserSession(event)
     if (!session.user) {
       throw createError({
@@ -9,12 +9,20 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // Get session data for Wipimo
-    const wipimoSession = session.platforms?.wipimo
-    const token = wipimoSession?.token
+    // Get connection from request body
+    const { connection } = await readBody(event)
+    
+    if (!connection || connection.platform.slug !== 'wipimo') {
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'Connexion Wipimo invalide'
+      })
+    }
+
+    const bearerToken = connection.token
     const cliDomain = session.user?.cliDomain
 
-    if (!token || !cliDomain) {
+    if (!bearerToken || !cliDomain) {
       throw createError({
         statusCode: 400,
         statusMessage: 'Session invalide - token ou domaine manquant'
@@ -46,7 +54,7 @@ export default defineEventHandler(async (event) => {
         const response = await $fetch(apiUrl, {
           method: 'GET',
           headers: {
-            'Authorization': `Bearer ${token}`,
+            'Authorization': `Bearer ${bearerToken}`,
             'Content-Type': 'application/json'
           }
         }) as any

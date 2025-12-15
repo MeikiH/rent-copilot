@@ -1,6 +1,6 @@
 export default defineEventHandler(async (event) => {
   try {
-    // Get user session
+    // Get user session for authentication
     const session = await getUserSession(event)
     if (!session.user) {
       throw createError({
@@ -9,15 +9,23 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // Get session data for X14
-    const x14Session = session.platforms?.x14
-    const token = x14Session?.token
-    const environment = x14Session?.environment
+    // Get connection from request body
+    const { connection } = await readBody(event)
+    
+    if (!connection || connection.platform.slug !== 'x14') {
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'Connexion X14 invalide'
+      })
+    }
+
+    const token = connection.token
+    const environment = connection.environment
 
     if (!token || !environment) {
         throw createError({
             statusCode: 400,
-            statusMessage: 'Session invalide - token ou environnement manquant'
+            statusMessage: 'Connexion invalide - token ou environnement manquant'
         })
     }
 

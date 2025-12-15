@@ -3,10 +3,11 @@
 
     <!-- Menu Title -->
     <div class="text-center">
-        <LogoEnvironment :platform="currentPlatform?.slug"  :environment="currentPlatform?.environment" class="w-12 mx-auto rounded-lg" />
+        <LogoEnvironment :platform="activeConnection?.platform?.slug"  :environment="activeConnection?.environment" class="w-12 mx-auto rounded-lg" />
         <div>
-            <h1 class="text-lg font-bold">{{ currentPlatform?.name }}</h1>
-            <p class="text-xs">{{ currentPlatform?.environment }}</p>
+            <h1 class="text-lg font-bold">{{ activeConnection?.platform?.name }}</h1>
+            <p class="text-xs">{{ activeConnection?.environment }}</p>
+            <p class="text-xs opacity-70">{{ activeConnection?.login }}</p>
         </div>
     </div>
 
@@ -50,19 +51,9 @@ const { logout, session } = useAuth()
 const { getPlatformConfig } = usePlatforms()
 const router = useRouter()
 
-// Get current active platform
-const currentPlatform = computed(() => {
-  const current = session.value?.currentPlatform
-  if (!current || !session.value?.platforms?.[current]) return null
-  
-  const config = getPlatformConfig(current)
-  const platformData = session.value.platforms[current]
-  
-  return {
-    slug: current,
-    name: config?.name || current,
-    environment: platformData.environment
-  }
+// Get current active connection
+const activeConnection = computed(() => {
+  return session.value?.activeConnection
 })
 
 const handleLogout = async () => {
