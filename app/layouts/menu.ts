@@ -7,6 +7,12 @@ export interface MenuEntry {
 
 export const menuEntries: MenuEntry[] = [
   {
+    slug: 'overview',
+    name: 'Connecteurs',
+    icon_code: 'heroicons:globe-alt',
+    path: '/'
+  },
+  {
     slug: 'data_viewer',
     name: 'Data Viz 360°',
     icon_code: 'heroicons:chart-pie',
