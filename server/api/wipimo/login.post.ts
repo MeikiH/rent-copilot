@@ -99,14 +99,14 @@ export default defineEventHandler(async (event) => {
 
       console.log('Navigation completed, extracting token...');
       // Extract token from localStorage or sessionStorage
-      const bearerToken = await page.evaluate(() => {
+      const token = await page.evaluate(() => {
         return (
           localStorage.getItem("accesstoken") ||
           sessionStorage.getItem("accesstoken")
         );
       });
 
-      if (!bearerToken) {
+      if (!token) {
         console.log('No bearer token found in localStorage/sessionStorage');
         throw createError({
           statusCode: 401,
@@ -122,7 +122,7 @@ export default defineEventHandler(async (event) => {
       const responseUser = await fetch(urlCurrentUser, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${bearerToken}`,
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       });
@@ -167,7 +167,7 @@ export default defineEventHandler(async (event) => {
           wipimo: {
             environment,
             cliDomain: userInfo.cliDomain,
-            bearerToken,
+            token,
             expiresAt: Date.now() + (24 * 60 * 60 * 1000)
           }
         },
@@ -177,7 +177,7 @@ export default defineEventHandler(async (event) => {
       return {
         success: true,
         cliDomain: userInfo.cliDomain,
-        bearerToken,
+        token,
         user: userInfo
       };
 

@@ -3,7 +3,7 @@
 
     <!-- Menu Title -->
     <div class="text-center">
-        <LogoEnvironment  :platform="currentPlatform?.slug"  :environment="currentPlatform?.environment" class="w-12 mx-auto rounded-lg" />
+        <LogoEnvironment :platform="currentPlatform?.slug"  :environment="currentPlatform?.environment" class="w-12 mx-auto rounded-lg" />
         <div>
             <h1 class="text-lg font-bold">{{ currentPlatform?.name }}</h1>
             <p class="text-xs">{{ currentPlatform?.environment }}</p>
@@ -13,7 +13,7 @@
     <hr class="my-4" />
     
     <!-- Menu Items -->
-    <ul>
+    <ul class="space-y-0.5">
       <li v-for="entry in menuEntries" :key="entry.slug">
         <NuxtLink 
           :to="entry.path"

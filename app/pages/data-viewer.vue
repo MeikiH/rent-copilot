@@ -19,24 +19,25 @@
     <!-- Data Display -->
     <div v-else-if="data" class="space-y-6">
       
-        <!-- <DataViewerWipimoList 
-          :persons="data.data.persons" 
-          :mandateOwners="data.data.mandateOwners" 
-          :properties="data.data.properties" 
-          :units="data.data.units" 
-          :leases="data.data.leases" 
-          :suppliers="data.data.suppliers" 
-        /> -->
+      <DataViewerWipimoList
+        v-if="currentPlatform === 'wipimo'"
+        :persons="data.data.persons" 
+        :mandateOwners="data.data.mandateOwners" 
+        :properties="data.data.properties" 
+        :units="data.data.units" 
+        :leases="data.data.leases" 
+        :suppliers="data.data.suppliers" 
+      />
 
-        <DataViewerX14List
-          v-if="currentPlatform === 'x14'"
-          :persons="data.data.persons" 
-          :mandates="data.data.mandates" 
-          :properties="data.data.properties" 
-          :units="data.data.units" 
-          :leases="data.data.leases" 
-        />
-        
+      <DataViewerX14List
+        v-else
+        :persons="data.data.persons" 
+        :mandates="data.data.mandates" 
+        :properties="data.data.properties" 
+        :units="data.data.units" 
+        :leases="data.data.leases" 
+      />
+      
     </div>
 
     <!-- No Data State -->

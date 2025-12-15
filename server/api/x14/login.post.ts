@@ -86,19 +86,19 @@ export default defineEventHandler(async (event) => {
       await setUserSession(event, {
         user: {
           // X14 fields
-          id: AuthStorage.id,
           login: AuthStorage.login,
           nom: AuthStorage.nom,
           
           // Normalized fields for consistency with Wipimo
-          userName: AuthStorage.nom,
+          id: AuthStorage.id,
           email: '', // X14 doesn't provide email in auth response
+          userName: AuthStorage.nom,
           companyName: Agence.nom
         },
         platforms: {
           x14: {
             environment,
-            authenticationToken: x14Response.authenticationToken,
+            token: x14Response.authenticationToken,
             agenceId: Agence.id,
             agenceName: Agence.nom,
             expiresAt: AuthStorage.expiration * 1000 // Convert to milliseconds
@@ -109,7 +109,7 @@ export default defineEventHandler(async (event) => {
 
       return {
         success: true,
-        authenticationToken: x14Response.authenticationToken,
+        token: x14Response.authenticationToken,
         user: {
           id: AuthStorage.id,
           nom: AuthStorage.nom,

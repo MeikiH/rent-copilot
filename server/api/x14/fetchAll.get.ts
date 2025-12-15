@@ -11,10 +11,10 @@ export default defineEventHandler(async (event) => {
 
     // Get session data for X14
     const x14Session = session.platforms?.x14
-    const bearerToken = x14Session?.authenticationToken
+    const token = x14Session?.token
     const environment = x14Session?.environment
 
-    if (!bearerToken || !environment) {
+    if (!token || !environment) {
         throw createError({
             statusCode: 400,
             statusMessage: 'Session invalide - token ou environnement manquant'
@@ -44,7 +44,7 @@ export default defineEventHandler(async (event) => {
         const response = await $fetch(apiUrl, {
           method: 'GET',
           headers: {
-            Cookie: `x14=${bearerToken}`,
+            Cookie: `x14=${token}`,
             "Content-Type": "application/json",
           }
         }) as any
