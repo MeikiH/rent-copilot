@@ -23,7 +23,7 @@
       <!-- Loading State -->
       <div v-else-if="currentStep === 'loading'" class="card bg-base-100 shadow-xl">
         <div class="card-body text-center">
-          <Loading size="lg" />
+          <Loading size="lg" class="mx-auto"/>
           <p>Connexion en cours...</p>
         </div>
       </div>

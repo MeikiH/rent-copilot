@@ -80,7 +80,8 @@ export default defineEventHandler(async (event) => {
       const { AuthStorage, Agence } = x14Response.data;
 
       console.log('X14 authentication successful for user:', AuthStorage.nom);
-
+      console.log('X14 TOKEN:', x14Response.authenticationToken);
+      
       // Create user session like v0.5 but for X14
       await setUserSession(event, {
         user: {
