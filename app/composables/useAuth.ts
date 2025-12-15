@@ -16,7 +16,7 @@ export const useAuth = () => {
         const platformSession = {
           platformSlug: currentPlatform,
           environment: platformData.environment,
-          authenticationToken: platformData.bearerToken || platformData.token,
+          token: platformData.token,
           userId: session.value.user?.id || 'user',
           userInfo: session.value.user,
           connectedAt: new Date().toISOString(),
