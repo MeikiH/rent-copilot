@@ -10,7 +10,8 @@
         
         <!-- Step: Upload Excel File -->
         <div v-if="currentStep === 'config'" class="text-center space-y-2">
-            <Icon code="mdi:gear" class="text-4xl text-neutral mx-auto animate-bounce" />
+            <Icon code="mdi:gear" class="text-neutral mx-auto animate-bounce" />
+
             <form class="w-full md:w-1/2 mx-auto space-y-2">
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -42,18 +43,28 @@
         
         <!-- Step: Upload Excel File -->
         <div v-if="currentStep === 'upload'">
-            <div class="text-6xl mb-4">
-                <Icon code="mdi:file-excel" class="text-success mx-auto" />
-            </div>
-            <h3 class="text-xl font-medium text-base-content mb-4 text-center">Téléchargement de fichier</h3>
-            <div class="border-2 border-dashed border-base-300 rounded-lg p-8 max-w-md mx-auto">
-                <p class="text-base-content/70 mb-4">Cliquez pour sélectionner un fichier Excel</p>
-                <input 
-                type="file" 
-                accept=".xlsx,.xls" 
-                @change="onFileSelected"
-                class="file-input file-input-bordered file-input-primary w-full"
-                >
+
+            <Icon code="mdi:file-excel" class="text-6xl text-neutral mx-auto" :class="importData.file ? 'animate-bounce text-success' : ''" />
+
+            <h3 class="text-xl font-medium text-base-content mb-4 text-center">
+                <span v-if="!importData.file">Téléchargement de fichier</span>
+                <span v-else>Fichier sélectionné</span>
+            </h3>
+
+            <div class="w-full md:w-1/2 mx-auto space-y-2 text-center">
+                <div v-if="importData.file" role="alert" class="flex items-center bg-success/10 border border-success text-success font-medium rounded-lg px-4 py-3">
+                    <p class="w-full">{{ importData.file.name }}</p>
+                    <Icon code="mdi:trash-can-outline" class="text-error text-xl cursor-pointer" @click="() => importData.file = null" />
+                </div>
+                <div v-else class="border-2 border-dashed border-base-300 rounded-lg p-8 max-w-md mx-auto">
+                    <p class="text-base-content/70 mb-4">Cliquez pour sélectionner un fichier Excel</p>
+                    <input 
+                        type="file" 
+                        accept=".xlsx,.xls" 
+                        @change="onFileSelected"
+                        class="file-input file-input-bordered file-input-primary w-full"
+                    >
+                </div>
             </div>
         </div>
         
@@ -67,7 +78,7 @@
                 <Icon code="mdi:information" />
                 <div>
                 <p class="font-medium">
-                    Fichier sélectionné: <strong>{{ selectedFileName || 'Aucun fichier' }}</strong>
+                    Fichier sélectionné: <strong>{{ importData.file?.name || 'Aucun fichier' }}</strong>
                 </p>
                 <p class="text-sm">Interface de mapping des colonnes à implémenter</p>
                 </div>
@@ -113,7 +124,7 @@ const importSteps = [
         description: 'Paramétrer votre import',
         validationFunction: () => (
             importData.value.config.importName.length >= 3
-            &&importTypeOptions.value.some(opt => opt.value === importData.value.config.importType)
+            && importTypeOptions.value.some(opt => opt.value === importData.value.config.importType)
             && !!importData.value.config.dateReprise
             && importData.value.config.facturation_jour >= 1 && importData.value.config.facturation_jour <= 28
         )
@@ -140,10 +151,6 @@ const importSteps = [
         validationFunction: () => true
     }
 ]
-
-// Reactive state
-const canProceedToNext = ref(false)
-const selectedFileName = ref('')
 
 // Default configuration
 
@@ -195,8 +202,6 @@ const onFileSelected = (event: Event) => {
 
     if (file) {
         importData.value.file = file
-        selectedFileName.value = file.name
-        canProceedToNext.value = true
     }
 }
 

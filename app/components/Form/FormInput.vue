@@ -2,7 +2,7 @@
   <div class="form-control">
     
     <fieldset class="fieldset p-0">
-      <legend class="fieldset-legend text-sm text-left">{{ label }}</legend>
+      <legend class="fieldset-legend text-sm text-left" v-if="label">{{ label }}</legend>
         
       <input 
         :type="type"
