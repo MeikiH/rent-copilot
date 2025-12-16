@@ -76,6 +76,8 @@
           </div>
         </div>
 
+        <pre class="bg-black text-white p-4">{{ session }}</pre>
+
       </div>
     </div>
   </div>
@@ -87,7 +89,7 @@ definePageMeta({
   title: 'Dashboard'
 })
 
-const { user, session } = useUserSession()
+const { session } = useUserSession()
 
 const connectedPlatformsSize = computed(():number => {
   return session.value?.connections?.length || 0

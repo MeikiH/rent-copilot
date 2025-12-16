@@ -41,7 +41,7 @@ export default defineEventHandler(async (event) => {
     console.log('Fetching all data for X14...')
 
     // Fetch all endpoints in parallel
-    const results = {} as any
+    const results = null as any
     
     for (const [entityName, endpoint] of Object.entries(endpoints)) {
       try {

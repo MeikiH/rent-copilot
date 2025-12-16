@@ -35,7 +35,7 @@ export const useSessionManager = () => {
     if (!session.value) {
       session.value = {
         sessionId: generateSessionId(),
-        connectedPlatforms: [],
+        connections: [],
         createdAt: new Date()
       }
       saveSession()
@@ -46,28 +46,28 @@ export const useSessionManager = () => {
     initializeSession()
     
     if (session.value) {
-      session.value.connectedPlatforms[platformSession.platformSlug] = platformSession
-      session.value.currentPlatform = platformSession.platformSlug
+      session.value.connections[platformSession.platformSlug] = platformSession
+      session.value.activeConnection = platformSession.platformSlug
       saveSession()
     }
   }
 
   const removePlatformConnection = (platformSlug: any) => {
-    if (session.value?.connectedPlatforms[platformSlug]) {
-      delete session.value.connectedPlatforms[platformSlug]
+    if (session.value?.connections[platformSlug]) {
+      delete session.value.connections[platformSlug]
       
-      // If this was the current platform, switch to another or clear
-      if (session.value.currentPlatform === platformSlug) {
-        const remainingPlatforms = Object.keys(session.value.connectedPlatforms) as any
-        session.value.currentPlatform = remainingPlatforms.length > 0 ? remainingPlatforms[0] : undefined
+      // If this was the active connection, switch to another or clear
+      if (session.value.activeConnection === platformSlug) {
+        const remainingPlatforms = Object.keys(session.value.connections) as any
+        session.value.activeConnection = remainingPlatforms.length > 0 ? remainingPlatforms[0] : undefined
       }
       saveSession()
     }
   }
 
   const switchPlatform = (platformSlug: any) => {
-    if (session.value?.connectedPlatforms[platformSlug]) {
-      session.value.currentPlatform = platformSlug
+    if (session.value?.connections[platformSlug]) {
+      session.value.activeConnection = platformSlug
       saveSession()
       return true
     }
@@ -75,20 +75,20 @@ export const useSessionManager = () => {
   }
 
   const getCurrentPlatformSession = () => {
-    if (!session.value?.currentPlatform) return null
-    return session.value.connectedPlatforms[session.value.currentPlatform] || null as any
+    if (!session.value?.activeConnection) return null
+    return session.value.connections[session.value.activeConnection] || null as any
   }
 
   const getPlatformSession = (platformSlug: any) => {
-    return session.value?.connectedPlatforms[platformSlug] || null
+    return session.value?.connections[platformSlug] || null
   }
 
   const getConnectedPlatforms = () => {
-    return Object.keys(session.value?.connectedPlatforms || []) as any
+    return Object.keys(session.value?.connections || []) as any
   }
 
   const isConnectedTo = (platformSlug: any) => {
-    return !!session.value?.connectedPlatforms[platformSlug]
+    return !!session.value?.connections[platformSlug]
   }
 
   const clearSession = () => {

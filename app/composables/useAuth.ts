@@ -7,20 +7,20 @@ export const useAuth = () => {
   
   // Sync server session with client session manager
   const syncSessionManager = () => {
-    if (session.value?.platforms && session.value.currentPlatform) {
-      const currentPlatform = session.value.currentPlatform as any
-      const platformData = (session.value.platforms as any)[currentPlatform]
+    if (session.value?.connections && session.value.activeConnection) {
+      const activeConnection = session.value.activeConnection as any
+      const connectionData = (session.value.connections as any)[activeConnection]
       
-      if (platformData && !sessionManager.isConnectedTo(currentPlatform)) {
+      if (connectionData && !sessionManager.isConnectedTo(activeConnection)) {
         // Convert server session format to client session format
         const platformSession = {
-          platformSlug: currentPlatform,
-          environment: platformData.environment,
-          token: platformData.token,
+          platformSlug: activeConnection,
+          environment: connectionData.environment,
+          token: connectionData.token,
           userId: (session.value.user as any)?.id || 'user',
           userInfo: session.value.user,
           connectedAt: new Date().toISOString(),
-          expiresAt: platformData.expiresAt
+          expiresAt: connectionData.expiresAt
         }
         
         sessionManager.addPlatformConnection(platformSession)
@@ -81,8 +81,8 @@ export const useAuth = () => {
     // Update server-side session
     const userData = {
       id: platformData.userId || 'user',
-      platforms: { [platformData.platformSlug]: platformData },
-      currentPlatform: platformData.platformSlug,
+      connections: { [platformData.platformSlug]: platformData },
+      activeConnection: platformData.platformSlug,
       connectedAt: new Date().toISOString()
     }
     
