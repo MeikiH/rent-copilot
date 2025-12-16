@@ -15,6 +15,7 @@ type WipimoApiUser = {
   UserName: string
   Email: string
   Pseudo: string
+  Societe?: string
   cliDomain: string
   Roles: string[]
 }
@@ -148,7 +149,7 @@ export default defineEventHandler(async (event) => {
 
       // Get existing session and merge connections
       const existingSession = await getUserSession(event)
-      const existingConnections = existingSession?.connections || []
+      const existingConnections = (existingSession?.connections || []) as any[]
       
       // Create computed ID: platformSlug-environment
       const connectionId = `wipimo-${environment}`
@@ -174,18 +175,10 @@ export default defineEventHandler(async (event) => {
       // Create or update user session with merged connections
       await setUserSession(event, {
         user: {
-          // Raw Wipimo fields (exact casing)
-          UserName: userInfo.UserName,
-          Id: userInfo.Id,
-          Email: userInfo.Email,
-          Pseudo: userInfo.Pseudo,
-          cliDomain: userInfo.cliDomain,
-          Roles: userInfo.Roles,
-          
-          // Normalized fields for convenience
           id: String(userInfo.Id),
+          login: userInfo.Pseudo,
           email: userInfo.Email,
-          userName: userInfo.Pseudo,
+          userName: userInfo.UserName,
           companyName: userInfo.Societe ?? userInfo.cliDomain
         },
         connections: [...updatedConnections, connectionObject],

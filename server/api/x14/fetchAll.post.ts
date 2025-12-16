@@ -22,10 +22,10 @@ export default defineEventHandler(async (event) => {
     const token = connection.token
     const environment = connection.environment
 
-    if (!token || !environment) {
+    if (!connection.token || !connection.environment) {
         throw createError({
-            statusCode: 400,
-            statusMessage: 'Connexion invalide - token ou environnement manquant'
+          statusCode: 400,
+          statusMessage: 'Session invalide - token ou environnement manquant'
         })
     }
 
@@ -41,7 +41,7 @@ export default defineEventHandler(async (event) => {
     console.log('Fetching all data for X14...')
 
     // Fetch all endpoints in parallel
-    const results = {}
+    const results = {} as any
     
     for (const [entityName, endpoint] of Object.entries(endpoints)) {
       try {

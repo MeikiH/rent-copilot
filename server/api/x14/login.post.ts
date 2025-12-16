@@ -84,7 +84,7 @@ export default defineEventHandler(async (event) => {
       
       // Get existing session and merge connections
       const existingSession = await getUserSession(event)
-      const existingConnections = existingSession?.connections || []
+      const existingConnections = (existingSession?.connections || []) as any[]
       
       // Create computed ID: platformSlug-environment
       const connectionId = `x14-${environment}`
@@ -111,12 +111,8 @@ export default defineEventHandler(async (event) => {
       // Create or update user session with merged connections for X14
       await setUserSession(event, {
         user: {
-          // X14 fields
-          login: AuthStorage.login,
-          nom: AuthStorage.nom,
-          
-          // Normalized fields for consistency with Wipimo
           id: AuthStorage.id,
+          login: AuthStorage.login,
           email: '', // X14 doesn't provide email in auth response
           userName: AuthStorage.nom,
           companyName: Agence.nom

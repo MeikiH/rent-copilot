@@ -19,13 +19,10 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    const bearerToken = connection.token
-    const cliDomain = session.user?.cliDomain
-
-    if (!bearerToken || !cliDomain) {
+    if (!connection.token || !connection.environment) {
       throw createError({
         statusCode: 400,
-        statusMessage: 'Session invalide - token ou domaine manquant'
+        statusMessage: 'Session invalide - token ou environnement manquant'
       })
     }
 
@@ -43,7 +40,7 @@ export default defineEventHandler(async (event) => {
     console.log('Fetching all data for Wipimo...')
 
     // Fetch all endpoints in parallel
-    const results = {}
+    const results = {} as any
     
     for (const [entityName, endpoint] of Object.entries(endpoints)) {
       try {
@@ -54,7 +51,7 @@ export default defineEventHandler(async (event) => {
         const response = await $fetch(apiUrl, {
           method: 'GET',
           headers: {
-            'Authorization': `Bearer ${bearerToken}`,
+            'Authorization': `Bearer ${connection.token}`,
             'Content-Type': 'application/json'
           }
         }) as any
