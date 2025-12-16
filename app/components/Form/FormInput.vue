@@ -1,28 +1,30 @@
 <template>
   <div class="form-control">
-    <label v-if="label" class="label">
-      <span class="label-text">{{ label }}</span>
-    </label>
     
-    <input 
-      :type="type"
-      :placeholder="placeholder"
-      :value="modelValue"
-      @input="$emit('update:modelValue',($event.target as HTMLInputElement)?.value)"
-      class="input input-bordered w-full"
-      :class="inputClasses"
-      :required="required"
-      :disabled="disabled"
-    />
-    
-    <!-- DaisyUI Validator -->
-    <div v-if="error" class="label">
-      <span class="label-text-alt text-error">{{ error }}</span>
-    </div>
-    
-    <div v-if="helper && !error" class="label">
-      <span class="label-text-alt">{{ helper }}</span>
-    </div>
+    <fieldset class="fieldset p-0">
+      <legend class="fieldset-legend text-sm text-left">{{ label }}</legend>
+        
+      <input 
+        :type="type"
+        :placeholder="placeholder"
+        :value="modelValue"
+        @input="$emit('update:modelValue',($event.target as HTMLInputElement)?.value)"
+        class="input input-bordered w-full"
+        :class="inputClasses"
+        :required="required"
+        :disabled="disabled"
+      />
+      
+      <!-- DaisyUI Validator -->
+      <div v-if="error" class="label -mt-1">
+        <span class="label-text-alt text-error">{{ error }}</span>
+      </div>
+      
+      <div v-if="helper && !error" class="label -mt-1">
+        <span class="label-text-alt">{{ helper }}</span>
+      </div>
+
+    </fieldset>
   </div>
 </template>
 
