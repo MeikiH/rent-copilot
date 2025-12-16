@@ -1,7 +1,5 @@
-import type { AppSession, PlatformSession } from '../../types/platforms'
-
 export const useSessionManager = () => {
-  const session = ref<AppSession | null>(null)
+  const session = ref(null)
 
   // Load from localStorage on init
   const loadSession = () => {
@@ -44,7 +42,7 @@ export const useSessionManager = () => {
     }
   }
 
-  const addPlatformConnection = (platformSession: PlatformSession) => {
+  const addPlatformConnection = (platformSession: any) => {
     initializeSession()
     
     if (session.value) {
@@ -76,12 +74,12 @@ export const useSessionManager = () => {
     return false
   }
 
-  const getCurrentPlatformSession = (): PlatformSession | null => {
+  const getCurrentPlatformSession = () => {
     if (!session.value?.currentPlatform) return null
     return session.value.connectedPlatforms[session.value.currentPlatform] || null
   }
 
-  const getPlatformSession = (platformSlug: string): PlatformSession | null => {
+  const getPlatformSession = (platformSlug: string) => {
     return session.value?.connectedPlatforms[platformSlug] || null
   }
 

@@ -1,18 +1,17 @@
 import platformsConfig from '../../config/platforms.json'
-import type { PlatformConfig } from '../../types/platforms'
 
 export const usePlatforms = () => {
-  const platforms = computed(() => platformsConfig as Record<string, PlatformConfig>)
+  const platforms = computed(() => platformsConfig)
 
-  const getPlatformConfig = (slug: string): PlatformConfig | null => {
+  const getPlatformConfig = (slug: string) => {
     return platforms.value[slug] || null
   }
 
-  const getPlatformList = (): PlatformConfig[] => {
+  const getPlatformList = () => {
     return Object.values(platforms.value)
   }
 
-  const getPlatformBySlug = (slug: string): PlatformConfig | null => {
+  const getPlatformBySlug = (slug: string) => {
     return platforms.value[slug] || null
   }
 

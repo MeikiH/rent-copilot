@@ -32,15 +32,13 @@
 </template>
 
 <script setup lang="ts">
-import type { PlatformConfig } from '../../types/platforms'
-
 const emit = defineEmits<{
   platformSelected: [platform: string]
 }>()
 
 const { getPlatformList } = usePlatforms()
 
-const platforms = computed<PlatformConfig[]>(() => getPlatformList())
+const platforms = computed(() => getPlatformList())
 
 const selectPlatform = (platformSlug: string) => {
   emit('platformSelected', platformSlug)
