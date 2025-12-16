@@ -2,9 +2,10 @@
   <div class="stepper-container w-full mx-auto">
     <!-- Header -->
     <StepperHeader 
-      :title="steps[currentStep]?.title || title"
-      :current-step="currentStep"
-      :total-steps="steps.length"
+      :title="sortedSteps[currentStepIndex]?.title || title"
+      :description="sortedSteps[currentStepIndex]?.description || ''"
+      :current-step="currentStepIndex"
+      :total-steps="sortedSteps.length"
     />
 
     <!-- Progress Bar -->
@@ -12,32 +13,41 @@
       :value="progress"
       label="Progression"
       class="w-full md:w-3/4 mx-auto"
-      size="lg"
+      :height="23"
     />
 
     <!-- Steps Navigation -->
     <StepperHeaderNavigation 
-      :steps="steps"
-      :current-step="currentStep"
+      :steps="sortedSteps"
+      :current-step="currentStepIndex"
     />
 
     <!-- Step Content -->
     <div class="bg-white rounded-lg shadow-sm border min-h-96">
       <div class="p-8">
-        <slot 
-          :current-step="currentStep" 
-          :step-data="steps[currentStep]"
-          :can-proceed="canProceed"
-        />
+        <StepperStep 
+          :step-order="currentStepIndex"
+          :current-step="currentStepIndex"
+          :title="sortedSteps[currentStepIndex]?.title"
+          :description="sortedSteps[currentStepIndex]?.description"
+        >
+          <slot 
+            :current-step="currentStep" 
+            :current-step-index="currentStepIndex"
+            :step-data="sortedSteps[currentStepIndex]"
+            :can-proceed="canProceed"
+            :sorted-steps="sortedSteps"
+          />
+        </StepperStep>
       </div>
     </div>
 
     <!-- Navigation -->
     <StepperNavigation
-      :current-step="currentStep"
-      :total-steps="steps.length"
+      :current-step="currentStepIndex"
+      :total-steps="sortedSteps.length"
       :can-proceed="canProceed"
-      :current-step-title="steps[currentStep]?.title"
+      :current-step-title="sortedSteps[currentStepIndex]?.title"
       @previous="previousStep"
       @next="nextStep"
       @finish="$emit('finished')"
@@ -47,45 +57,61 @@
 
 <script setup lang="ts">
 export interface Step {
+  step_order: number
+  step_slug: string
   title: string
   description?: string
   component?: string
+  validationFunction?: () => boolean
 }
 
 interface Props {
   steps: Step[]
   title?: string
-  canProceed?: boolean
   initialStep?: number
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  canProceed: true,
   initialStep: 0,
   title: 'Stepper'
 })
 
 const emit = defineEmits<{
-  stepChanged: [step: number]
+  stepChanged: [step: string]
   finished: []
 }>()
 
-const currentStep = ref(props.initialStep)
+// Sort steps by step_order to ensure proper order
+const sortedSteps = computed(() => 
+  [...props.steps].sort((a, b) => a.step_order - b.step_order)
+)
+
+const currentStepIndex = ref(props.initialStep)
+
+const currentStep = computed(() => 
+  sortedSteps.value[currentStepIndex.value]?.step_slug || ''
+)
 
 const progress = computed(() => {
-  return ((currentStep.value + 1) / props.steps.length) * 100
+  return ((currentStepIndex.value + 1) / sortedSteps.value.length) * 100
+})
+
+const canProceed = computed(() => {
+  const currentStepData = sortedSteps.value[currentStepIndex.value]
+  if (!currentStepData?.validationFunction) return true
+  return currentStepData.validationFunction()
 })
 
 const nextStep = () => {
-  if (currentStep.value < props.steps.length - 1) {
-    currentStep.value++
+  if (currentStepIndex.value < sortedSteps.value.length - 1) {
+    currentStepIndex.value++
     emit('stepChanged', currentStep.value)
   }
 }
 
 const previousStep = () => {
-  if (currentStep.value > 0) {
-    currentStep.value--
+  if (currentStepIndex.value > 0) {
+    currentStepIndex.value--
     emit('stepChanged', currentStep.value)
   }
 }

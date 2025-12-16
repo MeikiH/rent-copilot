@@ -17,14 +17,14 @@
                 <Icon code="heroicons:bars-3" />
                 </label>
             </div>
-            
-            <!-- Dynamic Page Title -->
-            <div class="flex items-center gap-3 ml-4">
-                <h1 v-if="pageTitle" class="card-title text-3xl font-bold text-primary">
-                    {{ pageTitle }}
-                </h1>
-            </div>
 
+        </div>
+
+        <!-- Dynamic Page Title -->
+        <div class="navbar-center">
+          <h1 v-if="pageTitle" class="card-title text-lg md:text-3xl font-bold text-primary">
+              {{ pageTitle }}
+          </h1>
         </div>
         
         <div class="navbar-end">

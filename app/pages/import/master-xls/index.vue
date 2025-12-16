@@ -2,84 +2,62 @@
   <div class="min-h-screen">
     <StepperContainer 
       :steps="importSteps"
-      :can-proceed="canProceedToNext"
       title="Import Master Excel > Wipimo"
       @step-changed="onStepChanged"
       @finished="onImportFinished"
     >
-      <template #default="{ currentStep }">
+      <template #default="{ currentStep, sortedSteps }">
         
         <!-- Step 0: Upload Excel File -->
-        <StepperStep 
-          :step-index="0"
-          :current-step="currentStep"
-          title="Upload Excel File"
-          description="Sélectionnez et téléchargez votre fichier Excel master"
-        >
-          <div class="text-center py-16">
-            <div class="text-6xl mb-4">
-              <Icon code="mdi:file-excel" class="text-success mx-auto" />
-            </div>
-            <h3 class="text-xl font-medium text-base-content mb-4">Téléchargement de fichier</h3>
-            <div class="border-2 border-dashed border-base-300 rounded-lg p-8 max-w-md mx-auto">
-              <p class="text-base-content/70 mb-4">Cliquez pour sélectionner un fichier Excel</p>
-              <input 
-                type="file" 
-                accept=".xlsx,.xls" 
-                @change="onFileSelected"
-                class="file-input file-input-bordered file-input-primary w-full"
-              >
-            </div>
+        <div v-if="currentStep === 'upload'">
+          <div class="text-6xl mb-4">
+            <Icon code="mdi:file-excel" class="text-success mx-auto" />
           </div>
-        </StepperStep>
+          <h3 class="text-xl font-medium text-base-content mb-4 text-center">Téléchargement de fichier</h3>
+          <div class="border-2 border-dashed border-base-300 rounded-lg p-8 max-w-md mx-auto">
+            <p class="text-base-content/70 mb-4">Cliquez pour sélectionner un fichier Excel</p>
+            <input 
+              type="file" 
+              accept=".xlsx,.xls" 
+              @change="onFileSelected"
+              class="file-input file-input-bordered file-input-primary w-full"
+            >
+          </div>
+        </div>
         
         <!-- Step 1: Map Columns -->
-        <StepperStep 
-          :step-index="1"
-          :current-step="currentStep"
-          title="Mapping des Colonnes"
-          description="Associez les colonnes Excel aux champs de la base de données"
-        >
-          <div class="text-center py-16">
-            <div class="text-6xl mb-4">
-              <Icon code="mdi:database-settings" class="text-primary mx-auto" />
-            </div>
-            <h3 class="text-xl font-medium text-base-content mb-4">Configuration du mapping</h3>
-            <div class="alert alert-info max-w-2xl mx-auto">
-              <Icon code="mdi:information" />
-              <div>
-                <p class="font-medium">
-                  Fichier sélectionné: <strong>{{ selectedFileName || 'Aucun fichier' }}</strong>
-                </p>
-                <p class="text-sm">Interface de mapping des colonnes à implémenter</p>
-              </div>
+        <div v-if="currentStep === 'mapping'">
+          <div class="text-6xl mb-4">
+            <Icon code="mdi:database-settings" class="text-primary mx-auto" />
+          </div>
+          <h3 class="text-xl font-medium text-base-content mb-4 text-center">Configuration du mapping</h3>
+          <div class="alert alert-info max-w-2xl mx-auto">
+            <Icon code="mdi:information" />
+            <div>
+              <p class="font-medium">
+                Fichier sélectionné: <strong>{{ selectedFileName || 'Aucun fichier' }}</strong>
+              </p>
+              <p class="text-sm">Interface de mapping des colonnes à implémenter</p>
             </div>
           </div>
-        </StepperStep>
+        </div>
         
         <!-- Step 2: Review & Import -->
-        <StepperStep 
-          :step-index="2"
-          :current-step="currentStep"
-          title="Validation & Import"
-          description="Vérifiez vos données et confirmez l'importation"
-        >
-          <div class="text-center py-16">
-            <div class="text-6xl mb-4">
-              <Icon code="mdi:check-circle" class="text-success mx-auto" />
-            </div>
-            <h3 class="text-xl font-medium text-base-content mb-4">Validation finale</h3>
-            <div class="alert alert-success max-w-2xl mx-auto">
-              <Icon code="mdi:check-circle" />
-              <div>
-                <p class="font-medium">
-                  Prêt à importer <strong>{{ selectedFileName || 'le fichier' }}</strong>
-                </p>
-                <p class="text-sm">Processus d'import et validation à implémenter</p>
-              </div>
+        <div v-if="currentStep === 'validation'">
+          <div class="text-6xl mb-4">
+            <Icon code="mdi:check-circle" class="text-success mx-auto" />
+          </div>
+          <h3 class="text-xl font-medium text-base-content mb-4 text-center">Validation finale</h3>
+          <div class="alert alert-success max-w-2xl mx-auto">
+            <Icon code="mdi:check-circle" />
+            <div>
+              <p class="font-medium">
+                Prêt à importer <strong>{{ selectedFileName || 'le fichier' }}</strong>
+              </p>
+              <p class="text-sm">Processus d'import et validation à implémenter</p>
             </div>
           </div>
-        </StepperStep>
+        </div>
         
       </template>
     </StepperContainer>
@@ -95,16 +73,32 @@ definePageMeta({
 // Define the import steps
 const importSteps = [
   { 
-    title: 'Upload File', 
-    description: 'Sélection du fichier Excel' 
+    step_order: 0,
+    step_slug: 'config',
+    title: 'Configuration', 
+    description: 'Paramétrer votre import',
+    validationFunction: () => true
+  }, 
+  { 
+    step_order: 1,
+    step_slug: 'upload',
+    title: 'Upload', 
+    description: 'Sélection du fichier Excel',
+    validationFunction: () => !!importData.value.file
   },
   { 
+    step_order: 2,
+    step_slug: 'mapping',
     title: 'Map Columns', 
-    description: 'Configuration des mappings' 
+    description: 'Configuration des mappings',
+    validationFunction: () => Object.keys(importData.value.mappings).length > 0 || true // Allow for demo
   },
   { 
+    step_order: 3,
+    step_slug: 'validation',
     title: 'Review & Import', 
-    description: 'Validation et import' 
+    description: 'Validation et import',
+    validationFunction: () => true
   }
 ]
 
@@ -115,24 +109,12 @@ const importData = ref({
   file: null,
   mappings: {},
   validationResults: null
-})
+}) as any
 
 // Event handlers
-const onStepChanged = (step: number) => {
-  console.log('Step changed to:', step)
-  
-  // Update proceed status based on step requirements
-  switch(step) {
-    case 0:
-      canProceedToNext.value = !!importData.value.file
-      break
-    case 1:
-      canProceedToNext.value = Object.keys(importData.value.mappings).length > 0 || true // Allow for demo
-      break
-    case 2:
-      canProceedToNext.value = true
-      break
-  }
+const onStepChanged = (stepSlug: string) => {
+  console.log('Step changed to:', stepSlug)
+  // StepperContainer now handles validation internally
 }
 
 const onFileSelected = (event: Event) => {

@@ -19,7 +19,7 @@
             <Icon v-if="index < currentStep" code="mdi:check" class="text-sm" />
             <span v-else class="text-sm font-medium">{{ index + 1 }}</span>
           </div>
-          <div class="ml-4 min-w-0">
+          <div class="hidden md:block ml-4 min-w-0">
             <p 
               class="text-sm font-medium transition-colors"
               :class="{
