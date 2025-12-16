@@ -8,8 +8,8 @@ export const useAuth = () => {
   // Sync server session with client session manager
   const syncSessionManager = () => {
     if (session.value?.platforms && session.value.currentPlatform) {
-      const currentPlatform = session.value.currentPlatform
-      const platformData = session.value.platforms[currentPlatform]
+      const currentPlatform = session.value.currentPlatform as any
+      const platformData = (session.value.platforms as any)[currentPlatform]
       
       if (platformData && !sessionManager.isConnectedTo(currentPlatform)) {
         // Convert server session format to client session format
@@ -17,7 +17,7 @@ export const useAuth = () => {
           platformSlug: currentPlatform,
           environment: platformData.environment,
           token: platformData.token,
-          userId: session.value.user?.id || 'user',
+          userId: (session.value.user as any)?.id || 'user',
           userInfo: session.value.user,
           connectedAt: new Date().toISOString(),
           expiresAt: platformData.expiresAt
@@ -37,7 +37,7 @@ export const useAuth = () => {
     }
   }, { immediate: true, deep: true })
   
-  const login = async (platform: string, environment: string, login: string, password: string) => {
+  const login = async (platform: any, environment: any, login: any, password: any) => {
     const response = await $fetch(`/api/${platform}/login`, {
       method: 'POST',
       body: {
@@ -53,7 +53,7 @@ export const useAuth = () => {
       syncSessionManager()
     }
     
-    return response
+    return response as any
   }
 
   const logout = async () => {
@@ -87,7 +87,7 @@ export const useAuth = () => {
     }
     
     // This will be handled by the login API endpoints
-    return userData
+    return userData as any
   }
   
   return {

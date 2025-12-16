@@ -52,7 +52,7 @@ const { getPlatformConfig } = usePlatforms()
 const router = useRouter()
 
 // Get current active connection
-const activeConnection = computed(() => {
+const activeConnection = computed(():any => {
   return session.value?.activeConnection
 })
 

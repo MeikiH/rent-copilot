@@ -1,25 +1,25 @@
 import platformsConfig from '../../config/platforms.json'
 
 export const usePlatforms = () => {
-  const platforms = computed(() => platformsConfig)
+  const platforms = computed(() => platformsConfig) as any
 
-  const getPlatformConfig = (slug: string) => {
-    return platforms.value[slug] || null
+  const getPlatformConfig = (slug: any) => {
+    return platforms.value[slug] || null as any
   }
 
   const getPlatformList = () => {
-    return Object.values(platforms.value)
+    return platforms.value as any
   }
 
-  const getPlatformBySlug = (slug: string) => {
-    return platforms.value[slug] || null
+  const getPlatformBySlug = (slug: any) => {
+    return platforms.value[slug] || null as any
   }
 
-  const validatePlatform = (slug: string): boolean => {
-    return slug in platforms.value
+  const validatePlatform = (slug: any) => {
+    return slug in platforms.value as any
   }
 
-  const getPlatformLogo = (slug: string, environment?: string): string => {
+  const getPlatformLogo = (slug: any, environment?: any) => {
     const config = getPlatformConfig(slug)
     if (!config) return ''
 
@@ -29,7 +29,7 @@ export const usePlatforms = () => {
     }
 
     // Return logo URL as is
-    return config.logo_public_url
+    return config.logo_public_url as any
   }
 
   return {

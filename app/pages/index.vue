@@ -8,7 +8,7 @@
           <Icon code="heroicons:chart-bar" />
         </div>
         <div class="stat-title">Connexions</div>
-        <div class="stat-value text-primary">{{ connectedPlatforms }}</div>
+        <div class="stat-value text-primary">{{ connectedPlatformsSize }}</div>
         <div class="stat-desc">Plateformes connectées</div>
       </div>
       
@@ -89,13 +89,13 @@ definePageMeta({
 
 const { user, session } = useUserSession()
 
-const connectedPlatforms = computed(() => {
+const connectedPlatformsSize = computed(():number => {
   return session.value?.connections?.length || 0
 })
 
 const lastActivity = computed(() => {
   return new Date().toLocaleTimeString('fr-FR')
-})
+}) as any
 
 const isActiveConnection = (connection: any) => {
   return session.value?.activeConnection?.id === connection.id
