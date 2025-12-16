@@ -2,41 +2,6 @@ export const useAuth = () => {
   // Use nuxt-auth-utils for server-side session management
   const { user, session, clear, loggedIn } = useUserSession()
   
-  // Custom session manager for client-side platform management
-  const sessionManager = useSessionManager()
-  
-  // Sync server session with client session manager
-  const syncSessionManager = () => {
-    if (session.value?.connections && session.value.activeConnection) {
-      const activeConnection = session.value.activeConnection as any
-      const connectionData = (session.value.connections as any)[activeConnection]
-      
-      if (connectionData && !sessionManager.isConnectedTo(activeConnection)) {
-        // Convert server session format to client session format
-        const platformSession = {
-          platformSlug: activeConnection,
-          environment: connectionData.environment,
-          token: connectionData.token,
-          userId: (session.value.user as any)?.id || 'user',
-          userInfo: session.value.user,
-          connectedAt: new Date().toISOString(),
-          expiresAt: connectionData.expiresAt
-        }
-        
-        sessionManager.addPlatformConnection(platformSession)
-      }
-    }
-  }
-  
-  // Watch for session changes and sync
-  watch(session, () => {
-    if (loggedIn.value) {
-      syncSessionManager()
-    } else {
-      sessionManager.clearSession()
-    }
-  }, { immediate: true, deep: true })
-  
   const login = async (platform: any, environment: any, login: any, password: any) => {
     const response = await $fetch(`/api/${platform}/login`, {
       method: 'POST',
@@ -46,12 +11,6 @@ export const useAuth = () => {
         password
       }
     })
-    
-    // Sync after successful login
-    if (response.success) {
-      await nextTick() // Wait for session to update
-      syncSessionManager()
-    }
     
     return response as any
   }
@@ -64,9 +23,6 @@ export const useAuth = () => {
       console.warn('Failed to clear server session:', error)
     }
     
-    // Clear client-side session
-    sessionManager.clearSession()
-    
     // Clear browser storage as fallback
     if (typeof window !== 'undefined') {
       localStorage.clear()
@@ -77,17 +33,33 @@ export const useAuth = () => {
     await navigateTo('/auth/login')
   }
   
-  const setUserSession = async (platformData: any) => {
-    // Update server-side session
-    const userData = {
-      id: platformData.userId || 'user',
-      connections: { [platformData.platformSlug]: platformData },
-      activeConnection: platformData.platformSlug,
-      connectedAt: new Date().toISOString()
+  // Helper functions for session data access
+  const getConnections = () => {
+    const connections = session.value?.connections || []
+    // Convert to array if it's an object
+    if (Array.isArray(connections)) {
+      return connections
     }
-    
-    // This will be handled by the login API endpoints
-    return userData as any
+    return Object.values(connections) as any
+  }
+
+  const getActiveConnection = () => {
+    return session.value?.activeConnection || null
+  }
+
+  const isConnectedTo = (connectionId: any) => {
+    const connections = getConnections()
+    if (!Array.isArray(connections)) return false
+    return connections.some((conn: any) => conn.id === connectionId)
+  }
+
+  const switchConnection = async (connection: any) => {
+    // Update active connection in server session
+    const response = await $fetch('/api/session/switch-connection', {
+      method: 'POST',
+      body: { connectionId: connection.id }
+    })
+    return response
   }
   
   return {
@@ -95,12 +67,15 @@ export const useAuth = () => {
     user,
     session,
     loggedIn,
-    sessionManager,
     
     // Auth actions
     login,
     logout,
-    setUserSession,
-    syncSessionManager
+    
+    // Helper functions
+    getConnections,
+    getActiveConnection,
+    isConnectedTo,
+    switchConnection
   }
 }

@@ -37,7 +37,7 @@
                     <li>
                         <a class="flex items-center gap-2">
                         <Icon code="heroicons:user" />
-                        {{ user?.userName }}
+                        {{ (user as any)?.userName || (user as any)?.name || 'User' }}
                         </a>
                     </li>
                     <li>

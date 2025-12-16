@@ -48,8 +48,6 @@ defineProps({
 })
 
 const { logout, session } = useAuth()
-const { getPlatformConfig } = usePlatforms()
-const router = useRouter()
 
 // Get current active connection
 const activeConnection = computed(():any => {

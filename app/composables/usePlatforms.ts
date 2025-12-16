@@ -15,8 +15,8 @@ export const usePlatforms = () => {
     return platforms.value[slug] || null as any
   }
 
-  const validatePlatform = (slug: any) => {
-    return slug in platforms.value as any
+  const isValidPlatform = (slug: any):boolean => {
+    return slug in platforms.value
   }
 
   const getPlatformLogo = (slug: any, environment?: any) => {
@@ -37,7 +37,7 @@ export const usePlatforms = () => {
     getPlatformConfig,
     getPlatformList,
     getPlatformBySlug,
-    validatePlatform,
+    isValidPlatform,
     getPlatformLogo
   }
 }

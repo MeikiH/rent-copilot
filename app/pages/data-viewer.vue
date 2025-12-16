@@ -71,7 +71,7 @@ const currentConnection = computed(() => {
 })
 
 const currentPlatform = computed(() => {
-  return currentConnection.value?.platform?.slug || null
+  return (currentConnection.value as any)?.platform?.slug || null
 })
 
 const loadData = async () => {

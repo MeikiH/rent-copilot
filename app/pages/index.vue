@@ -35,7 +35,7 @@
       <div class="card-body">
         <h2 class="card-title">Connexions</h2>
         
-        <div v-if="!session?.connections?.length" class="text-center py-8">
+        <div v-if="!(session as any)?.connections?.length" class="text-center py-8">
           <Icon code="heroicons:plus-circle" class="w-16 h-16 mx-auto text-gray-400 mb-4" />
           <p class="text-lg mb-4">Aucune connexion active</p>
           <Button @click="$router.push('/auth/login')" class="btn-primary">
@@ -45,8 +45,8 @@
 
         <div v-else class="space-y-4">
           <div 
-            v-for="connection in session.connections" 
-            :key="connection.id" 
+            v-for="connection in ((session as any).connections || [])" 
+            :key="(connection as any).id" 
             class="card bg-base-200 hover:bg-base-300 cursor-pointer transition-colors"
             :class="{ 'ring-2 ring-primary': isActiveConnection(connection) }"
             @click="switchConnection(connection)"
@@ -55,14 +55,14 @@
               <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-3">
                   <LogoEnvironment 
-                    :platform="connection.platform.slug" 
-                    :environment="connection.environment" 
+                    :platform="(connection as any).platform.slug" 
+                    :environment="(connection as any).environment" 
                     class="w-12 h-12"
                   />
                   <div>
-                    <h3 class="font-bold">{{ connection.platform.name }}</h3>
-                    <p class="text-sm opacity-70">{{ connection.environment }}</p>
-                    <p class="text-xs opacity-60">{{ connection.login }}</p>
+                    <h3 class="font-bold">{{ (connection as any).platform.name }}</h3>
+                    <p class="text-sm opacity-70">{{ (connection as any).environment }}</p>
+                    <p class="text-xs opacity-60">{{ (connection as any).login }}</p>
                   </div>
                 </div>
                 <div class="flex items-center space-x-2">
@@ -91,8 +91,9 @@ definePageMeta({
 
 const { session } = useUserSession()
 
-const connectedPlatformsSize = computed(():number => {
-  return session.value?.connections?.length || 0
+const connectedPlatformsSize = computed(() => {
+  const connections = session.value?.connections || []
+  return Array.isArray(connections) ? connections.length : 0
 })
 
 const lastActivity = computed(() => {
@@ -100,7 +101,7 @@ const lastActivity = computed(() => {
 }) as any
 
 const isActiveConnection = (connection: any) => {
-  return session.value?.activeConnection?.id === connection.id
+  return (session.value as any)?.activeConnection?.id === connection.id
 }
 
 const switchConnection = async (connection: any) => {
