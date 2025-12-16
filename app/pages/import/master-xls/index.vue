@@ -18,7 +18,7 @@
         >
           <div class="text-center py-16">
             <div class="text-6xl mb-4">
-              <Icon code="mdi:file-excel" class="text-green-500" />
+              <Icon code="mdi:file-excel" class="text-green-500 mx-auto" />
             </div>
             <h3 class="text-xl font-medium text-gray-900 mb-4">Téléchargement de fichier</h3>
             <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 max-w-md mx-auto">
@@ -42,7 +42,7 @@
         >
           <div class="text-center py-16">
             <div class="text-6xl mb-4">
-              <Icon code="mdi:database-settings" class="text-blue-500" />
+              <Icon code="mdi:database-settings" class="text-blue-500 mx-auto" />
             </div>
             <h3 class="text-xl font-medium text-gray-900 mb-4">Configuration du mapping</h3>
             <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 max-w-2xl mx-auto">
@@ -63,7 +63,7 @@
         >
           <div class="text-center py-16">
             <div class="text-6xl mb-4">
-              <Icon code="mdi:check-circle" class="text-green-500" />
+              <Icon code="mdi:check-circle" class="text-green-500 mx-auto" />
             </div>
             <h3 class="text-xl font-medium text-gray-900 mb-4">Validation finale</h3>
             <div class="bg-green-50 border border-green-200 rounded-lg p-6 max-w-2xl mx-auto">

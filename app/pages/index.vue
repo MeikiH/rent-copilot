@@ -76,8 +76,6 @@
           </div>
         </div>
 
-        <pre class="bg-black text-white p-4">{{ session }}</pre>
-
       </div>
     </div>
   </div>

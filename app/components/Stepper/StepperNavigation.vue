@@ -4,7 +4,7 @@
       v-if="currentStep > 0"
       @click="$emit('previous')"
       icon="mdi:arrow-left"
-      class="bg-gray-200 text-gray-700 hover:bg-gray-300"
+      class="btn btn-ghost"
     >
       Étape précédente
     </Button>
@@ -12,7 +12,7 @@
     <div v-else></div>
     
     <div class="text-center">
-      <p class="text-sm text-gray-500">
+      <p class="text-sm text-base-content/70">
         {{ currentStepTitle }}
       </p>
     </div>
@@ -23,7 +23,7 @@
       :disabled="!canProceed"
       icon="mdi:arrow-right"
       iconPosition="right"
-      :class="canProceed ? 'bg-blue-500 text-white hover:bg-blue-600' : 'bg-gray-300 text-gray-500 cursor-not-allowed'"
+      :class="canProceed ? 'btn btn-primary' : 'btn btn-disabled'"
     >
       Étape suivante
     </Button>
@@ -33,7 +33,7 @@
       @click="$emit('finish')"
       :disabled="!canProceed"
       icon="mdi:check"
-      :class="canProceed ? 'bg-green-500 text-white hover:bg-green-600' : 'bg-gray-300 text-gray-500 cursor-not-allowed'"
+      :class="canProceed ? 'btn btn-success' : 'btn btn-disabled'"
     >
       Terminer
     </Button>

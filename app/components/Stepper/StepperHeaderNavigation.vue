@@ -11,9 +11,9 @@
           <div 
             class="flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all"
             :class="{
-              'bg-blue-500 border-blue-500 text-white': index < currentStep,
-              'bg-blue-500 border-blue-500 text-white animate-pulse': index === currentStep,
-              'border-gray-300 text-gray-500': index > currentStep
+              'bg-primary border-primary text-primary-content': index < currentStep,
+              'bg-primary border-primary text-primary-content animate-pulse': index === currentStep,
+              'border-base-300 text-base-content': index > currentStep
             }"
           >
             <Icon v-if="index < currentStep" code="mdi:check" class="text-sm" />
@@ -23,13 +23,13 @@
             <p 
               class="text-sm font-medium transition-colors"
               :class="{
-                'text-blue-600': index <= currentStep,
-                'text-gray-500': index > currentStep
+                'text-primary': index <= currentStep,
+                'text-base-content/70': index > currentStep
               }"
             >
               {{ step.title }}
             </p>
-            <p class="text-xs text-gray-500">{{ step.description }}</p>
+            <p class="text-xs text-base-content/70">{{ step.description }}</p>
           </div>
         </li>
       </ol>

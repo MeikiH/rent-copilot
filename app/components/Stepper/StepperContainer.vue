@@ -11,7 +11,8 @@
     <ProgressBar 
       :value="progress"
       label="Progression"
-      class="w-1/2"
+      class="w-full md:w-3/4 mx-auto"
+      size="lg"
     />
 
     <!-- Steps Navigation -->
