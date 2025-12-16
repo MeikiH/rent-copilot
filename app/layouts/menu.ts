@@ -22,7 +22,7 @@ export const menuEntries: MenuEntry[] = [
     slug: 'import_master_wipimo',
     name: 'Import Excel Wipimo',
     icon_code: 'heroicons:document-arrow-up',
-    path: '/import/wipimo'
+    path: '/import/master-xls'
   },
   {
     slug: 'transfer_x14_wipimo',
