@@ -1,5 +1,8 @@
 <template>
   <div class="min-h-screen">
+    
+    <!-- <pre class="my-4 bg-black text-white p-4">{{ importData }}</pre> -->
+
     <StepperContainer 
         :steps="importSteps"
         title="Import Master Excel > Wipimo"
@@ -9,7 +12,7 @@
       <template #default="{ currentStep }">
         <ConfigStep v-if="currentStep === 'config'" :import-data="importData" :import-type-options="importTypeOptions" :date-derniere-facturation="dateDerniereFacturation" @update-config="onUpdateConfig" />
         
-        <UploadStep v-if="currentStep === 'upload'" :import-data="importData" @file-uploaded="onFileUploaded" @file-clear="onFileClear" />
+        <UploadStep v-if="currentStep === 'upload'" :import-data="importData" @file-uploaded="onFileUploaded" />
         
         <MappingStep v-if="currentStep === 'mapping'" :import-data="importData" />
         
@@ -49,7 +52,7 @@ const importSteps = [
         step_slug: 'upload',
         title: 'Upload', 
         description: 'Sélection du fichier Excel',
-        validationFunction: () => !!importData.value.file
+        validationFunction: () => importData.value.file && importData.value.fileData
     },
     { 
         step_order: 2,
@@ -119,14 +122,9 @@ const onUpdateConfig = (field: string, value: any) => {
 }
 
 // Event handlers for file upload
-const onFileUploaded = (file: File, fileData: any) => {
+const onFileUploaded = (file: File | null, fileData: any) => {
   importData.value.file = file
   importData.value.fileData = fileData
-}
-
-const onFileClear = () => {
-  importData.value.file = null
-  importData.value.fileData = null
 }
 
 const onImportFinished = () => {

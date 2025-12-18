@@ -203,3 +203,53 @@ export const getEntity = (keyOrLabel: string): EntityMetadata | undefined => {
     entity.key === keyOrLabel || entity.label === keyOrLabel
   )
 }
+
+/**
+ * Retrieve multiple entities with optional filtering
+ * 
+ * Returns an array of entities that match the provided filter criteria.
+ * If no filters are provided, returns all entities. Filters are combined
+ * with AND logic (all conditions must be met).
+ * 
+ * @param filters - Optional object with filter criteria (key/value pairs)
+ * @returns Array of entities matching the filter criteria
+ * 
+ * @example
+ * // Get all entities
+ * const allEntities = getEntities()
+ * 
+ * // Get entities included in master imports
+ * const masterEntities = getEntities({ in_master: true })
+ * 
+ * // Get required master entities
+ * const requiredEntities = getEntities({ in_master: true, master_required: true })
+ * 
+ * // Get entities by parent relationship
+ * const propertyChildren = getEntities({ belongsTo: 'property' })
+ * 
+ * // Get entities by color theme
+ * const blueEntities = getEntities({ color: 'blue-600' })
+ * 
+ * // Get light master version entities
+ * const lightEntities = getEntities({ master_light_version: true })
+ * 
+ * // Combine multiple filters
+ * const specificEntities = getEntities({ 
+ *   in_master: true, 
+ *   belongsTo: 'mandateOwner' 
+ * })
+ */
+export const getEntities = (filters?: Partial<EntityMetadata>): EntityMetadata[] => {
+  // If no filters provided, return all entities
+  if (!filters || Object.keys(filters).length === 0) {
+    return [...ENTITIES]
+  }
+  
+  return ENTITIES.filter(entity => {
+    // Check if entity matches all filter criteria
+    return Object.entries(filters).every(([key, value]) => {
+      const entityValue = entity[key as keyof EntityMetadata]
+      return entityValue === value
+    })
+  })
+}
