@@ -14,7 +14,7 @@
         
         <UploadStep v-if="currentStep === 'upload'" :import-data="importData" @file-uploaded="onFileUploaded" />
         
-        <MappingStep v-if="currentStep === 'mapping'" :import-data="importData" />
+        <FileAudit v-if="currentStep === 'audit'" :import-data="importData" />
         
         <ValidationStep v-if="currentStep === 'validation'" :import-data="importData" />
       </template>
@@ -25,7 +25,7 @@
 <script setup lang="ts">
 import ConfigStep from './steps/ConfigStep.vue'
 import UploadStep from './steps/UploadStep.vue'
-import MappingStep from './steps/MappingStep.vue'
+import FileAudit from './steps/FileAudit.vue'
 import ValidationStep from './steps/ValidationStep.vue'
 
 definePageMeta({
@@ -56,10 +56,10 @@ const importSteps = [
     },
     { 
         step_order: 2,
-        step_slug: 'mapping',
-        title: 'Map Columns', 
-        description: 'Configuration des mappings',
-        validationFunction: () => Object.keys(importData.value.mappings).length > 0 || true // Allow for demo
+        step_slug: 'audit',
+        title: 'Validation', 
+        description: 'Validation & formattage des données',
+        validationFunction: () => true
     },
     { 
         step_order: 3,
@@ -105,7 +105,6 @@ const importData = ref({
     },
     file: null,
     fileData: null,
-    mappings: {},
     validationResults: {},
     importResults: {}
 }) as any

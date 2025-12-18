@@ -52,7 +52,7 @@ const emit = defineEmits<{
   fileUploaded: [file: File | null, fileData: any]
 }>()
 
-// Local data*
+// Local data
 const validationReport = ref<any[]>([])
 const hasErrors = computed(() => validationReport.value.some(report => report.severity === 'error'))
 
@@ -169,7 +169,7 @@ const onFileSelected = async (event: Event) => {
                             const entityName = allFileEntityNames[index];
                             const attributeName = attributeNames[index];
 
-                            if (!attributeName) {
+                            if (!entityName || !attributeName) {
                                 validationReport.value.push({
                                         severity: 'error',
                                         type: 'empty_entity',
