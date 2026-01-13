@@ -7,7 +7,7 @@
 
     <div class="w-full md:w-1/2 mx-auto space-y-2 text-center">
 
-
+      <!-- TO COMPLETE -->
 
     </div>
 
@@ -29,5 +29,10 @@ defineProps<{
 // Local data
 const validationReport = ref<any[]>([])
 const hasErrors = computed(() => validationReport.value.some(report => report.severity === 'error'))
+
+// TO COMPLETE 
+// Here we should implement the logic to audit/validate the imported file data based on the v0\components\ImportMASTER.vue generateExtract() function
+// We should implement the same validation Report as v1\app\pages\import\master-xls\steps\UploadStep.vue
+// But we should implement a kind of LOG / DEBUG console in the page to show row per row the validation progress (like "Validation Ligne 1 démarré", etc... with the timesamps)
 
 </script>
